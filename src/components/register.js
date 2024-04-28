@@ -1,7 +1,58 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { headers } from "./helpers/helper";
+const { REACT_APP_BASE_URL } = process.env;
 
 const Register = () => {
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [rePassword, setRePassword] = useState(null);
+  const [age, setAge] = useState(null);
+  const [experience, setExperience] = useState(null);
+  const [interests, setInterests] = useState("");
+  const [type, setType] = useState("Entrepreneur");
+  const [loader, setLoader] = useState(false);
+  const navigate = useNavigate();
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setLoader(true);
+    try {
+      if (password != rePassword) {
+        alert("Passwords did not match");
+        return;
+      }
+
+      await axios.post(
+        `${REACT_APP_BASE_URL}/register`,
+        {
+          email,
+          password,
+          age,
+          experience,
+          interests: interests.split(",").map((val) => val.trim()),
+          type,
+        },
+        { headers }
+      );
+      alert("Registration Successfull");
+      setEmail("");
+      setPassword("");
+      setRePassword("");
+      setAge(null);
+      setExperience(null);
+      setInterests("");
+      setType("Entrepreneur");
+      setLoader(false);
+      navigate("/");
+    } catch (error) {
+      console.log("Error", error);
+      alert(error.response.data.detail);
+      setLoader(false);
+    }
+  };
+
   return (
     <section class="relative bg-[url('https://i.ibb.co/sg6sD4D/login.png')] h-dvh md:h-screen bg-no-repeat bg-cover  ">
       <div class="absolute inset-0  bg-black opacity-50"></div>
@@ -11,7 +62,7 @@ const Register = () => {
             <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
               Create Your Account
             </h1>
-            <form class="space-y-4 md:space-y-6" action="#">
+            <form class="space-y-4 md:space-y-6" onSubmit={onSubmit}>
               <div>
                 <label
                   for="email"
@@ -24,23 +75,43 @@ const Register = () => {
                   name="email"
                   id="email"
                   class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required=""
+                  required
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div>
-                <label
-                  for="password"
-                  class="block mb-2 text-sm font-medium text-white"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required=""
-                />
+              <div className="grid md:grid-cols-2 md:gap-6">
+                <div>
+                  <label
+                    for="password"
+                    class="block mb-2 text-sm font-medium text-white"
+                  >
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label
+                    for="confirmPassword"
+                    class="block mb-2 text-sm font-medium text-white"
+                  >
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required
+                    onChange={(e) => setRePassword(e.target.value)}
+                  />
+                </div>
               </div>
               <div className="grid md:grid-cols-2 md:gap-6">
                 <div>
@@ -55,7 +126,8 @@ const Register = () => {
                     name="age"
                     id="age"
                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required=""
+                    required
+                    onChange={(e) => setAge(parseInt(e.target.value))}
                   />
                 </div>
                 <div>
@@ -70,7 +142,8 @@ const Register = () => {
                     name="experience"
                     id="experience"
                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required=""
+                    required
+                    onChange={(e) => setExperience(parseInt(e.target.value))}
                   />
                 </div>
               </div>
@@ -87,7 +160,9 @@ const Register = () => {
                     name="interest"
                     id="interest"
                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required=""
+                    required
+                    onChange={(e) => setInterests(e.target.value)}
+                    placeholder="Enter ',' separated Interests"
                   />
                 </div>
                 <div>
@@ -100,15 +175,19 @@ const Register = () => {
                   <select
                     id="countries"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required
+                    onChange={(e) => setType(e.target.value)}
+                    defaultValue={"Entrepreneur"}
                   >
-                    <option>Entrepreneur</option>
-                    <option>Invester</option>
+                    <option value={"Entrepreneur"}>Entrepreneur</option>
+                    <option value={"Invester"}>Invester</option>
                   </select>
                 </div>
               </div>
               <button
                 type="submit"
-                class="w-full text-white bg-primary outline outline-offset-2 outline-1 outline-blue-500/50 hover:bg-blue-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                class={`w-full ${loader ? "cursor-not-allowed" : "cursor-pointer"}  text-white bg-primary outline outline-offset-2 outline-1 outline-blue-500/50 hover:bg-blue-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center`}
+                disabled={loader}
               >
                 Sign up
               </button>
