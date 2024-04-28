@@ -24,9 +24,11 @@ const Login = () => {
       );
       await Promise.allSettled([
         localStorage.setItem("token", result.data.token),
+        localStorage.setItem("user", JSON.stringify(result.data.user)),
       ]);
       setLoader(false);
       navigate("/dash-board");
+      window.location.reload();
     } catch (error) {
       console.log("Error", error);
       alert(error.response.data.detail);

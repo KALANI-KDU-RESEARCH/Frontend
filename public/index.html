@@ -16,15 +16,24 @@
     />
     <title>React App</title>
     <style>
-     
+      tr {
+        border-top: 1px solid #c6cbd1;
+        background: #fff;
+      }
+
+      th,
+      td {
+        padding: 6px 13px;
+        border: 1px solid #dfe2e5;
+      }
+
+      table tr:nth-child(2n) {
+        background: #f6f8fa;
+      }
     </style>
   </head>
   <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-    <script>
-      document.getElementById("trends-widget-2").style.height =
-        "100% !important";
-    </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
