@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { headers } from "./helpers/helper";
 const { REACT_APP_BASE_URL } = process.env;
 
 const Login = () => {
@@ -13,11 +14,17 @@ const Login = () => {
     e.preventDefault();
     setLoader(true);
     try {
-      const result = await axios.post(`${REACT_APP_BASE_URL}/login`, {
-        email,
-        password,
-      });
-      await Promise.allSettled([localStorage.setItem("token", result.data.token)]);
+      const result = await axios.post(
+        `${REACT_APP_BASE_URL}/login`,
+        {
+          email,
+          password,
+        },
+        { headers }
+      );
+      await Promise.allSettled([
+        localStorage.setItem("token", result.data.token),
+      ]);
       setLoader(false);
       navigate("/dash-board");
     } catch (error) {
