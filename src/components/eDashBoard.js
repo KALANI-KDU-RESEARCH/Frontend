@@ -1,11 +1,12 @@
 import React from "react";
 import GoogleTrends from "./helpers/GoogleTrends";
+import Header from "./Header";
 
 const EDashBoard = () => {
   return (
     <div>
-      EDashBoard
-      <div id="widget">
+      <Header />
+      <div id="widget" className="grid md:grid-cols-2 gap-10">
         <GoogleTrends
           type="TIMESERIES"
           keyword="Coding"
