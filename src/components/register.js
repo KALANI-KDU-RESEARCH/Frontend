@@ -19,7 +19,7 @@ const Register = () => {
     e.preventDefault();
     setLoader(true);
     try {
-      if (password != rePassword) {
+      if (password !== rePassword) {
         alert("Passwords did not match");
         return;
       }
