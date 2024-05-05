@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { headers } from "./helpers/helper";
+import { notification } from "antd";
 const { REACT_APP_BASE_URL } = process.env;
 
 const Login = () => {
@@ -31,7 +32,10 @@ const Login = () => {
       window.location.reload();
     } catch (error) {
       console.log("Error", error);
-      alert(error.response.data.detail);
+      notification.error({
+        message: error.response.data.detail,
+        placement: "topRight",
+      });
       setLoader(false);
     }
   };

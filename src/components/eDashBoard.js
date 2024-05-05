@@ -11,7 +11,7 @@ import { Select } from "antd";
 import { useLocation, useNavigate } from "react-router";
 const { REACT_APP_BASE_URL } = process.env;
 
-const EDashBoard = () => {
+const EDashBoard = ({ setIsDeleted }) => {
   const local = JSON.parse(localStorage.getItem("user"));
 
   const location = useLocation();
@@ -52,7 +52,7 @@ const EDashBoard = () => {
 
   return (
     <div className="bg-[#F5F9CD]">
-      <Header />
+      <Header setIsDeleted={setIsDeleted} />
       <div className="container">
         <h5
           className="text-[#650D26] text-2xl font-semibold mt-10"
@@ -61,7 +61,11 @@ const EDashBoard = () => {
           Current Trends Related Your Interests 📈{" "}
           <Select
             defaultValue="Select a Country"
-            value={geo ? countries.find((el) => el.value === geo)?.label : "Select a Country"}
+            value={
+              geo
+                ? countries.find((el) => el.value === geo)?.label
+                : "Select a Country"
+            }
             className="w-40"
             options={countries.map((el) => ({ ...el, value: el.label }))}
             showSearch

@@ -11,6 +11,7 @@ function App() {
   const [render, setRender] = useState(false);
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
+  const [isDeleted, setIsDeleted] = useState(false);
   useEffect(() => {
     if (user?.email) {
       setRender(true);
@@ -21,14 +22,14 @@ function App() {
 
   return (
     <div>
-      {render && <ChatBot />}
+      {render && <ChatBot isDeleted={isDeleted} setIsDeleted={setIsDeleted} />}
       <Routes>
         <Route path="/" element={<Login />} />
         <Route
           path="/dash-board"
           element={
             <PrivateRoute>
-              <EDashBoard />
+              <EDashBoard setIsDeleted={setIsDeleted} />
             </PrivateRoute>
           }
         />

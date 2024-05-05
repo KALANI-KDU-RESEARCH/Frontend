@@ -5,7 +5,7 @@ import "react-chat-widget/lib/styles.css";
 import { headers } from "./helpers/helper";
 const { REACT_APP_BASE_URL } = process.env;
 
-const ChatBot = () => {
+const ChatBot = ({ isDeleted, setIsDeleted }) => {
   const [message, setMessage] = useState("");
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
@@ -21,7 +21,15 @@ const ChatBot = () => {
         .catch((err) => alert(err));
       addResponseMessage("**Welcome Chief to this awesome chat!**");
     })();
+    setIsDeleted(false);
   }, []);
+
+  useEffect(() => {
+    if (isDeleted) {
+      window.location.reload();
+      setIsDeleted(false);
+    }
+  }, [isDeleted]);
 
   const handleNewUserMessage = async (newMessage) => {
     await axios

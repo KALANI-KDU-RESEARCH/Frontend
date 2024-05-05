@@ -1,16 +1,39 @@
 import { SettingFilled, SettingOutlined } from "@ant-design/icons";
-import { Button, Popover } from "antd";
+import { Button, Modal, Popover, notification } from "antd";
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { headers } from "./helpers/helper";
+const { REACT_APP_BASE_URL } = process.env;
 
-const Header = () => {
+const Header = ({ setIsDeleted }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openChatsModal, setOpenChatsModal] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
   const hide = () => {
     setOpen(false);
   };
   const handleOpenChange = (newOpen) => {
     setOpen(newOpen);
+  };
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${REACT_APP_BASE_URL}/chat/${user._id}`, {
+        headers,
+      });
+      setIsDeleted(true);
+      notification.success({
+        message: "Chat Threads Deleted Successfully",
+        placement: "topRight",
+      });
+      setOpenChatsModal(false);
+    } catch (error) {
+      notification.error({
+        message: error.response.data.detail,
+        placement: "topRight",
+      });
+    }
   };
   return (
     <header>
@@ -110,7 +133,14 @@ const Header = () => {
                           <Button>Update My Interests</Button>
                         </p>
                         <p className=" mt-1">
-                          <Button>Delete Chats</Button>
+                          <Button
+                            onClick={() => {
+                              hide();
+                              setOpenChatsModal(true);
+                            }}
+                          >
+                            Delete Chats
+                          </Button>
                         </p>
                       </>
                     }
@@ -128,6 +158,23 @@ const Header = () => {
             </ul>
           </div>
         </div>
+        <Modal
+          title={"DELETE MY CHATS"}
+          open={openChatsModal}
+          onCancel={() => setOpenChatsModal(false)}
+          footer={null}
+        >
+          <center>
+            <br />
+            <p>Are you sure you want to delete your chat threads ?</p> <br />
+            <Button
+              className=" bg-red-500 text-white border-none"
+              onClick={handleDelete}
+            >
+              DELETE
+            </Button>
+          </center>
+        </Modal>
       </nav>
     </header>
   );

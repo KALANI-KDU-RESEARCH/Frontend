@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { headers } from "./helpers/helper";
+import { notification } from "antd";
 const { REACT_APP_BASE_URL } = process.env;
 
 const Register = () => {
@@ -20,7 +21,10 @@ const Register = () => {
     setLoader(true);
     try {
       if (password !== rePassword) {
-        alert("Passwords did not match");
+        notification.info({
+          message: "Passwords did not match",
+          placement: "topRight",
+        });
         setLoader(false);
         return;
       }
@@ -37,7 +41,10 @@ const Register = () => {
         },
         { headers }
       );
-      alert("Registration Successfull");
+      notification.info({
+        message: "Registration Successfull",
+        placement: "topRight",
+      });
       setEmail("");
       setPassword("");
       setRePassword("");
@@ -49,7 +56,10 @@ const Register = () => {
       navigate("/");
     } catch (error) {
       console.log("Error", error);
-      alert(error.response.data.detail);
+      notification.error({
+        message: error.response.data.detail,
+        placement: "topRight",
+      });
       setLoader(false);
     }
   };
@@ -187,7 +197,9 @@ const Register = () => {
               </div>
               <button
                 type="submit"
-                class={`w-full ${loader ? "cursor-not-allowed" : "cursor-pointer"}  text-white bg-primary outline outline-offset-2 outline-1 outline-blue-500/50 hover:bg-blue-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center`}
+                class={`w-full ${
+                  loader ? "cursor-not-allowed" : "cursor-pointer"
+                }  text-white bg-primary outline outline-offset-2 outline-1 outline-blue-500/50 hover:bg-blue-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center`}
                 disabled={loader}
               >
                 Sign up
