@@ -21,6 +21,7 @@ const Register = () => {
     try {
       if (password !== rePassword) {
         alert("Passwords did not match");
+        setLoader(false);
         return;
       }
 

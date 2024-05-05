@@ -41,9 +41,17 @@ const ChatBot = () => {
     <div className="App">
       <Widget
         handleNewUserMessage={handleNewUserMessage}
-        profileAvatar={"https://flowbite.com/docs/images/logo.svg"}
+        profileAvatar={"https://i.ibb.co/2WH8sKP/bot.png"}
+        profileClientAvatar={"https://flowbite.com/docs/images/logo.svg"}
         title="My Chat Assistant"
         subtitle="Micro Entrepreneur Management System"
+        // titleAvatar={"https://flowbite.com/docs/images/logo.svg"}
+        resizable={true}
+        markAllAsRead
+        showBadge={false}
+        emojis={true}
+        launcherOpenImg={"https://i.ibb.co/2WH8sKP/bot.png"}
+        launcherCloseImg={"https://i.ibb.co/8B4kGnB/close.png"}
       />
     </div>
   );

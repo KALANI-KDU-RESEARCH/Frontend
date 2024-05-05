@@ -2,32 +2,43 @@ import React, { useEffect, useRef, useState } from "react";
 import GoogleTrends from "./helpers/GoogleTrends";
 import Header from "./Header";
 import axios from "axios";
-import { headers } from "./helpers/helper";
+import { countries, headers } from "./helpers/helper";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { Audio, Hearts, InfinitySpin } from "react-loader-spinner";
+import { Select } from "antd";
+import { useLocation, useNavigate } from "react-router";
 const { REACT_APP_BASE_URL } = process.env;
 
 const EDashBoard = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const local = JSON.parse(localStorage.getItem("user"));
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const geo = queryParams.get("geo");
+
+  const [user, setUser] = useState(
+    local?.interests.map((el) => ({ text: el, geo: geo ? geo : "LK" }))
+  );
   const predictions = useRef([]);
   const [dataPredicted, setDataPredicted] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      for await (const element of user.interests) {
+      for await (const { text } of user) {
         setLoading(true);
         const result = await axios.post(
           `${REACT_APP_BASE_URL}/predict`,
           {
-            name: `Request: "I'm seeking micro-entrepreneur business ideas tailored to ${element}. It is mandatory to include tables for given element."
+            name: `Request: "I'm seeking micro-entrepreneur business ideas tailored to ${text}. It is mandatory to include tables for given element."
 
             Suggested Optimization:
-            
-            Understanding ${element}: Provide a brief overview of ${element}, its significance, and its relevance to micro-enterprises.
-            Micro-Entrepreneur Business Ideas: Present a range of innovative business ideas relevant to ${element}, each accompanied by a detailed description, including potential target markets, revenue streams, startup costs, and scalability.
+
+            Understanding ${text}: Provide a brief overview of ${text}, its significance, and its relevance to micro-enterprises.
+            Micro-Entrepreneur Business Ideas: Present a range of innovative business ideas relevant to ${text}, each accompanied by a detailed description, including potential target markets, revenue streams, startup costs, and scalability.
             Visual Aids: Incorporate tables where necessary to illustrate concepts such as market analysis, cost breakdowns, or revenue projections, enhancing clarity and comprehension.`,
           },
           { headers }
@@ -47,23 +58,39 @@ const EDashBoard = () => {
           className="text-[#650D26] text-2xl font-semibold mt-10"
           style={{ fontFamily: "Montserrat Alternates" }}
         >
-          Current Trends Related Your Interests 📈
+          Current Trends Related Your Interests 📈{" "}
+          <Select
+            defaultValue="Select a Country"
+            value={geo ? countries.find((el) => el.value === geo)?.label : "Select a Country"}
+            className="w-40"
+            options={countries.map((el) => ({ ...el, value: el.label }))}
+            showSearch
+            onSelect={(e) => {
+              navigate("?geo=" + countries.find((el) => el.label === e)?.value);
+              window.location.reload();
+            }}
+          />
         </h5>
-        <div id="widget" className="grid md:grid-cols-2 gap-10 ">
-          {user.interests.map((val) => (
-            <>
-              <GoogleTrends
-                type="TIMESERIES"
-                keyword={val}
-                url="https://ssl.gstatic.com/trends_nrtr/2051_RC11/embed_loader.js"
-              />
-              <GoogleTrends
-                type="GEO_MAP"
-                keyword={val}
-                url="https://ssl.gstatic.com/trends_nrtr/2051_RC11/embed_loader.js"
-              />
-            </>
-          ))}
+
+        <div id="widget" className="flex gap-1 overflow-x-scroll mt-2">
+          {[...user].map((val) => {
+            return (
+              <>
+                <GoogleTrends
+                  type="TIMESERIES"
+                  keyword={val.text}
+                  url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
+                  geo={val.geo}
+                />
+                <GoogleTrends
+                  type="GEO_MAP"
+                  keyword={val.text}
+                  url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
+                  geo={val.geo}
+                />
+              </>
+            );
+          })}
         </div>
         <h5
           className="text-[#650D26] text-2xl font-semibold mt-10"
