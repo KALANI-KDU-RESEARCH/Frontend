@@ -132,7 +132,7 @@ const Header = ({ setIsDeleted }) => {
                         <p>
                           <Button>Update My Interests</Button>
                         </p>
-                        <p className=" mt-1">
+                        {/* <p className=" mt-1">
                           <Button
                             onClick={() => {
                               hide();
@@ -141,7 +141,7 @@ const Header = ({ setIsDeleted }) => {
                           >
                             Delete Chats
                           </Button>
-                        </p>
+                        </p> */}
                       </>
                     }
                     title="My Account Settings"
@@ -149,8 +149,8 @@ const Header = ({ setIsDeleted }) => {
                     open={open}
                     onOpenChange={handleOpenChange}
                   >
-                    <Button type="primary" className="bg-black">
-                      <SettingFilled className=" text-white" />
+                    <Button type="primary" className="bg-black grid content-center">
+                      <SettingFilled className=" text-white " />
                     </Button>
                   </Popover>
                 </a>
