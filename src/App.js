@@ -6,6 +6,8 @@ import Register from "./components/register";
 import PrivateRoute from "./PrivateRoute";
 import ChatBot from "./components/chatBot";
 import { useEffect, useState } from "react";
+import CreatePost from "./components/CreatePost";
+import MyPosts from "./components/MyPosts";
 
 function App() {
   const [render, setRender] = useState(false);
@@ -30,6 +32,22 @@ function App() {
           element={
             <PrivateRoute>
               <EDashBoard setIsDeleted={setIsDeleted} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dash-board/create-post"
+          element={
+            <PrivateRoute>
+              <CreatePost />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dash-board/my-posts"
+          element={
+            <PrivateRoute>
+              <MyPosts />
             </PrivateRoute>
           }
         />

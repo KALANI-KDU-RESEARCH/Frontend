@@ -1,3 +1,6 @@
+import { Cloudinary } from "cloudinary-core";
+const { REACT_APP_CLOUD_NAME } = process.env;
+
 export const headers = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",
@@ -201,4 +204,34 @@ export const countries = [
   { value: "YE", label: "Yemen" },
   { value: "ZM", label: "Zambia" },
   { value: "ZW", label: "Zimbabwe" },
+];
+
+export const cloudinary = new Cloudinary({
+  cloud_name: REACT_APP_CLOUD_NAME,
+  secure: true,
+});
+
+export const categories = [
+  "Technology",
+  "Marketing",
+  "Sales",
+  "Finance",
+  "Customer Service",
+  "Product Development",
+  "Operations",
+  "HR & Recruitment",
+  "Legal",
+  "Business Strategy",
+  "Supply Chain",
+  "E-commerce",
+  "Social Media",
+  "Branding",
+  "Networking",
+  "Investments",
+  "Accounting",
+  "Project Management",
+  "Leadership",
+  "Innovation",
+  "Risk Management",
+  "Other",
 ];

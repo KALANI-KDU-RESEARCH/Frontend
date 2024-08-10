@@ -8,7 +8,7 @@ import {
 import { Button, Modal, Popover, notification } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { headers } from "./helpers/helper";
 const { REACT_APP_BASE_URL } = process.env;
 
@@ -71,16 +71,18 @@ const Header = ({ setIsDeleted }) => {
     <header>
       <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <div class="flex items-center">
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              class="mr-3 h-6 sm:h-9"
-              alt="Flowbite Logo"
-            />
-            <span class="self-center md:text-xl text-[9px] font-semibold whitespace-nowrap dark:text-white">
-              Micro Entrepreneur Management System
-            </span>
-          </div>
+          <Link to={"/dash-board"}>
+            <div class="flex items-center">
+              <img
+                src="https://flowbite.com/docs/images/logo.svg"
+                class="mr-3 h-6 sm:h-9"
+                alt="Flowbite Logo"
+              />
+              <span class="self-center md:text-xl text-[9px] font-semibold whitespace-nowrap dark:text-white">
+                Micro Entrepreneur Management System
+              </span>
+            </div>
+          </Link>
           <div class="flex items-center lg:order-2">
             <a
               onClick={() => {
@@ -134,19 +136,27 @@ const Header = ({ setIsDeleted }) => {
               <li>
                 <a
                   href="#"
-                  class="block py-2 pr-4 pl-3 text-white rounded bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 "
+                  class="block py-2 pr-4 pl-3 text-white rounded md:bg-transparent md:text-gray-700 md:p-0 md:hover:text-blue-700"
                   aria-current="page"
                 >
                   News
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to={"/dash-board/create-post"}
                   class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Create a Post
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/dash-board/my-posts"}
+                  class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                >
+                  My Posts
+                </Link>
               </li>
               <li>
                 <a
