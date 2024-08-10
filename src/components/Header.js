@@ -1,4 +1,10 @@
-import { SettingFilled, SettingOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SaveOutlined,
+  SettingFilled,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { Button, Modal, Popover, notification } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
@@ -10,7 +16,10 @@ const Header = ({ setIsDeleted }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [openChatsModal, setOpenChatsModal] = useState(false);
+  const [openInterestsModal, setOpenInterestsModal] = useState(false);
+  const [isChangedFields, setIsChangedFields] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [interests, setInterests] = useState({ ...user }.interests);
   const hide = () => {
     setOpen(false);
   };
@@ -28,6 +37,29 @@ const Header = ({ setIsDeleted }) => {
         placement: "topRight",
       });
       setOpenChatsModal(false);
+    } catch (error) {
+      notification.error({
+        message: error.response.data.detail,
+        placement: "topRight",
+      });
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await axios.patch(
+        `${REACT_APP_BASE_URL}/profile/${user._id}`,
+        {
+          interests: interests.split(",").map((val) => val.trim()),
+        },
+        { headers }
+      );
+      notification.info({
+        message: "Interests Update Successfull",
+        placement: "topRight",
+      });
+      localStorage.clear();
+      navigate("/");
     } catch (error) {
       notification.error({
         message: error.response.data.detail,
@@ -130,18 +162,27 @@ const Header = ({ setIsDeleted }) => {
                     content={
                       <>
                         <p>
-                          <Button>Update My Interests</Button>
-                        </p>
-                        {/* <p className=" mt-1">
                           <Button
+                            className=" bg-green-500 text-white w-full"
+                            onClick={() => {
+                              hide();
+                              setOpenInterestsModal(true);
+                            }}
+                          >
+                            <EditOutlined /> Update My Interests
+                          </Button>
+                        </p>
+                        <p className=" mt-1 ">
+                          <Button
+                            className=" bg-red-500 text-white w-full"
                             onClick={() => {
                               hide();
                               setOpenChatsModal(true);
                             }}
                           >
-                            Delete Chats
+                            <DeleteOutlined /> Delete Chats
                           </Button>
-                        </p> */}
+                        </p>
                       </>
                     }
                     title="My Account Settings"
@@ -149,7 +190,10 @@ const Header = ({ setIsDeleted }) => {
                     open={open}
                     onOpenChange={handleOpenChange}
                   >
-                    <Button type="primary" className="bg-black grid content-center">
+                    <Button
+                      type="primary"
+                      className="bg-black grid content-center"
+                    >
                       <SettingFilled className=" text-white " />
                     </Button>
                   </Popover>
@@ -172,6 +216,40 @@ const Header = ({ setIsDeleted }) => {
               onClick={handleDelete}
             >
               DELETE
+            </Button>
+          </center>
+        </Modal>
+        <Modal
+          title={"UPDATE MY INTERESTS"}
+          open={openInterestsModal}
+          onCancel={() => {
+            setOpenInterestsModal(false);
+            setIsChangedFields(false);
+          }}
+          footer={null}
+        >
+          <input
+            type="text"
+            name="interest"
+            id="interest"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            value={interests}
+            onChange={(e) => {
+              setInterests(e.target.value);
+              setIsChangedFields(true);
+            }}
+            placeholder="Enter ',' separated Interests"
+          />
+          <q>Enter comma separated values</q>
+          <br />
+          <center>
+            <Button
+              className={isChangedFields && " bg-green-500 text-white"}
+              disabled={!isChangedFields}
+              onClick={handleUpdate}
+            >
+              <SaveOutlined /> Save Changes
             </Button>
           </center>
         </Modal>

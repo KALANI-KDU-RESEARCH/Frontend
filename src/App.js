@@ -22,7 +22,7 @@ function App() {
 
   return (
     <div>
-      {/* {render && <ChatBot isDeleted={isDeleted} setIsDeleted={setIsDeleted} />} */}
+      {render && <ChatBot isDeleted={isDeleted} setIsDeleted={setIsDeleted} />}
       <Routes>
         <Route path="/" element={<Login />} />
         <Route
