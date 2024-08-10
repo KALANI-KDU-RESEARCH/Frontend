@@ -1,9 +1,11 @@
 // GoogleTrends.js
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Script from "react-load-script";
 
 export default function GoogleTrends({ type, keyword, url, geo }) {
+  const UrlRef = useRef('');
+  UrlRef.current = `q=${encodeURI(keyword)}&geo=${geo}&date=today 12-m`;
 
   const handleScriptLoad = (_) => {
     window.trends.embed.renderExploreWidgetTo(
@@ -15,7 +17,7 @@ export default function GoogleTrends({ type, keyword, url, geo }) {
         property: "",
       },
       {
-        exploreQuery: `q=${encodeURI(keyword)}&geo=${geo}&date=today 12-m`,
+        exploreQuery: UrlRef.current,
         guestPath: "https://trends.google.com:443/trends/embed/",
       }
     );
@@ -24,10 +26,6 @@ export default function GoogleTrends({ type, keyword, url, geo }) {
   const renderGoogleTrend = (_) => {
     return <Script url={url} onLoad={handleScriptLoad} />;
   };
-
-  useEffect(() => {
-    console.log("USEEEFECT");
-  }, [geo]);
 
   return <div className="googleTrend" key={geo}>{renderGoogleTrend()}</div>;
 }

@@ -6,6 +6,10 @@ import Register from "./components/register";
 import PrivateRoute from "./PrivateRoute";
 import ChatBot from "./components/chatBot";
 import { useEffect, useState } from "react";
+import CreatePost from "./components/CreatePost";
+import MyPosts from "./components/MyPosts";
+import IDashBoard from "./components/iDashBoard";
+import Footer from "./components/Footer";
 
 function App() {
   const [render, setRender] = useState(false);
@@ -22,14 +26,37 @@ function App() {
 
   return (
     <div>
-      {/* {render && <ChatBot isDeleted={isDeleted} setIsDeleted={setIsDeleted} />} */}
+      {render && <ChatBot isDeleted={isDeleted} setIsDeleted={setIsDeleted} />}
       <Routes>
         <Route path="/" element={<Login />} />
         <Route
           path="/dash-board"
           element={
             <PrivateRoute>
-              <EDashBoard setIsDeleted={setIsDeleted} />
+              {user?.type === "Invester" ? (
+                <IDashBoard />
+              ) : (
+                <EDashBoard setIsDeleted={setIsDeleted} />
+              )}
+              <Footer />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dash-board/create-post"
+          element={
+            <PrivateRoute>
+              <CreatePost />
+              <Footer />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dash-board/my-posts"
+          element={
+            <PrivateRoute>
+              <MyPosts />
+              <Footer />
             </PrivateRoute>
           }
         />

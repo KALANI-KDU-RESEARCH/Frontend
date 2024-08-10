@@ -1,8 +1,14 @@
-import { SettingFilled, SettingOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SaveOutlined,
+  SettingFilled,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { Button, Modal, Popover, notification } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { headers } from "./helpers/helper";
 const { REACT_APP_BASE_URL } = process.env;
 
@@ -10,7 +16,12 @@ const Header = ({ setIsDeleted }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [openChatsModal, setOpenChatsModal] = useState(false);
+  const [openInterestsModal, setOpenInterestsModal] = useState(false);
+  const [isChangedFields, setIsChangedFields] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [interests, setInterests] = useState({ ...user }.interests);
+  const [age, setAge] = useState({ ...user }.age);
+  const [experience, setExperience] = useState({ ...user }.experience);
   const hide = () => {
     setOpen(false);
   };
@@ -35,20 +46,51 @@ const Header = ({ setIsDeleted }) => {
       });
     }
   };
+
+  const handleUpdate = async () => {
+    try {
+      await axios.patch(
+        `${REACT_APP_BASE_URL}/profile/${user._id}`,
+        {
+          interests: interests?.toString().split(",").map((val) => val.trim()),
+          age: age,
+          experience: experience,
+        },
+        { headers }
+      );
+      notification.info({
+        message: "Interests Update Successfull",
+        placement: "topRight",
+      });
+      localStorage.clear();
+      navigate("/");
+    } catch (error) {
+      console.log("ERRRR",error)
+      notification.error({
+        message: error.response.data.detail,
+        placement: "topRight",
+      });
+    }
+  };
   return (
     <header>
-      <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+      <nav class="border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800 left-0 w-full bg-white shadow-lg z-50">
         <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <div class="flex items-center">
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              class="mr-3 h-6 sm:h-9"
-              alt="Flowbite Logo"
-            />
-            <span class="self-center md:text-xl text-[9px] font-semibold whitespace-nowrap dark:text-white">
-              Micro Entrepreneur Management System
-            </span>
-          </div>
+          <Link to={"/dash-board"}>
+            <div class="flex items-center relative">
+              <img
+                src="https://flowbite.com/docs/images/logo.svg"
+                class="mr-3 h-6 sm:h-9"
+                alt="Flowbite Logo"
+              />
+              <span class="self-center md:text-xl text-[9px] font-semibold whitespace-nowrap dark:text-white relative">
+                Micro Entrepreneur Management System
+                <span class="text-[10px] font-medium text-blue-500 ml-1 align-super">
+                  Logged in as {user.type}
+                </span>
+              </span>
+            </div>
+          </Link>
           <div class="flex items-center lg:order-2">
             <a
               onClick={() => {
@@ -102,20 +144,32 @@ const Header = ({ setIsDeleted }) => {
               <li>
                 <a
                   href="#"
-                  class="block py-2 pr-4 pl-3 text-white rounded bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 "
+                  class="block py-2 pr-4 pl-3 text-white rounded md:bg-transparent md:text-gray-700 md:p-0 md:hover:text-blue-700"
                   aria-current="page"
                 >
                   News
                 </a>
               </li>
-              <li>
-                <a
-                  href="#"
-                  class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                >
-                  Create a Post
-                </a>
-              </li>
+              {user.type === "Entrepreneur" && (
+                <>
+                  <li>
+                    <Link
+                      to={"/dash-board/create-post"}
+                      class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    >
+                      Create a Post
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={"/dash-board/my-posts"}
+                      class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    >
+                      My Posts
+                    </Link>
+                  </li>
+                </>
+              )}
               <li>
                 <a
                   href="#"
@@ -124,37 +178,53 @@ const Header = ({ setIsDeleted }) => {
                   Knowledge Repository
                 </a>
               </li>
-              <li>
-                <a class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
-                  <Popover
-                    content={
-                      <>
-                        <p>
-                          <Button>Update My Interests</Button>
-                        </p>
-                        {/* <p className=" mt-1">
-                          <Button
-                            onClick={() => {
-                              hide();
-                              setOpenChatsModal(true);
-                            }}
-                          >
-                            Delete Chats
-                          </Button>
-                        </p> */}
-                      </>
-                    }
-                    title="My Account Settings"
-                    trigger="click"
-                    open={open}
-                    onOpenChange={handleOpenChange}
-                  >
-                    <Button type="primary" className="bg-black grid content-center">
-                      <SettingFilled className=" text-white " />
-                    </Button>
-                  </Popover>
-                </a>
-              </li>
+              {user.type === "Entrepreneur" && (
+                <li>
+                  <a class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                    <Popover
+                      content={
+                        <>
+                          My Impression Rate:{" "}
+                          {localStorage.getItem("impressionRate")}
+                          <p>
+                            <Button
+                              className=" bg-green-500 text-white w-full"
+                              onClick={() => {
+                                hide();
+                                setOpenInterestsModal(true);
+                              }}
+                            >
+                              <EditOutlined /> Update My Stats
+                            </Button>
+                          </p>
+                          <p className=" mt-1 ">
+                            <Button
+                              className=" bg-red-500 text-white w-full"
+                              onClick={() => {
+                                hide();
+                                setOpenChatsModal(true);
+                              }}
+                            >
+                              <DeleteOutlined /> Delete Chats
+                            </Button>
+                          </p>
+                        </>
+                      }
+                      title="My Account Settings"
+                      trigger="click"
+                      open={open}
+                      onOpenChange={handleOpenChange}
+                    >
+                      <Button
+                        type="primary"
+                        className="bg-black grid content-center"
+                      >
+                        <SettingFilled className=" text-white " />
+                      </Button>
+                    </Popover>
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -172,6 +242,66 @@ const Header = ({ setIsDeleted }) => {
               onClick={handleDelete}
             >
               DELETE
+            </Button>
+          </center>
+        </Modal>
+        <Modal
+          title={"Update My Stats"}
+          open={openInterestsModal}
+          onCancel={() => {
+            setOpenInterestsModal(false);
+            setIsChangedFields(false);
+          }}
+          footer={null}
+        >
+          <input
+            type="text"
+            name="interest"
+            id="interest"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            value={interests}
+            onChange={(e) => {
+              setInterests(e.target.value);
+              setIsChangedFields(true);
+            }}
+            placeholder="Enter ',' separated Interests"
+          />
+          <q>Enter comma separated values</q>
+          <br />
+          <input
+            type="number"
+            name="age"
+            id="age"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            onChange={(e) => {
+              setAge(parseInt(e.target.value));
+              setIsChangedFields(true);
+            }}
+            value={age}
+          />
+          <br />
+          <input
+            type="number"
+            name="experience"
+            id="experience"
+            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            onChange={(e) => {
+              setExperience(parseInt(e.target.value));
+              setIsChangedFields(true);
+            }}
+            value={experience}
+          />
+          <br />
+          <center>
+            <Button
+              className={isChangedFields && " bg-green-500 text-white"}
+              disabled={!isChangedFields}
+              onClick={handleUpdate}
+            >
+              <SaveOutlined /> Save Changes
             </Button>
           </center>
         </Modal>

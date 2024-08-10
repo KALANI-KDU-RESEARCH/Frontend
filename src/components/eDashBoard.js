@@ -7,7 +7,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { Audio, Hearts, InfinitySpin } from "react-loader-spinner";
-import { Select } from "antd";
+import { Select, Spin } from "antd";
 import { useLocation, useNavigate } from "react-router";
 const { REACT_APP_BASE_URL } = process.env;
 
@@ -21,13 +21,29 @@ const EDashBoard = ({ setIsDeleted }) => {
   const [user, setUser] = useState(
     local?.interests.map((el) => ({ text: el, geo: geo ? geo : "LK" }))
   );
+  const [isLoading, setIsLoading] = useState(false);
   const predictions = useRef([]);
   const [dataPredicted, setDataPredicted] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [impressionRate, setImpressionRate] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
+      if (local.type === "Entrepreneur")
+        await axios
+          .post(`${REACT_APP_BASE_URL}/impressionRate/${local._id}`, {
+            interests_count: local.interests?.length,
+            age: local.age,
+            experience: local.experience,
+          })
+          .then((res) => {
+            setImpressionRate(res.data?.["impression-rate"]);
+            localStorage.setItem(
+              "impressionRate",
+              res.data?.["impression-rate"]
+            );
+          });
       for await (const { text } of user) {
         setLoading(true);
         const result = await axios.post(
@@ -70,32 +86,50 @@ const EDashBoard = ({ setIsDeleted }) => {
             options={countries.map((el) => ({ ...el, value: el.label }))}
             showSearch
             onSelect={(e) => {
+              setIsLoading(true);
               navigate("?geo=" + countries.find((el) => el.label === e)?.value);
-              window.location.reload();
+              setUser((prevArray) =>
+                prevArray.map((obj) => ({
+                  ...obj,
+                  geo: countries.find((el) => el.label === e)?.value,
+                }))
+              );
+              setTimeout(() => {
+                console.log("user----", user);
+                setIsLoading(false);
+              }, 3000);
+              // window.location.reload();
             }}
           />
         </h5>
 
-        <div id="widget" className="flex gap-1 overflow-x-scroll mt-2">
-          {[...user].map((val) => {
-            return (
-              <>
-                <GoogleTrends
-                  type="TIMESERIES"
-                  keyword={val.text}
-                  url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
-                  geo={val.geo}
-                />
-                <GoogleTrends
-                  type="GEO_MAP"
-                  keyword={val.text}
-                  url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
-                  geo={val.geo}
-                />
-              </>
-            );
-          })}
-        </div>
+        {!isLoading ? (
+          <div id="widget" className="flex gap-1 overflow-x-scroll mt-2">
+            {[...user].map((val) => {
+              return (
+                <>
+                  <GoogleTrends
+                    type="TIMESERIES"
+                    keyword={val.text}
+                    url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
+                    geo={val.geo}
+                  />
+                  <GoogleTrends
+                    type="GEO_MAP"
+                    keyword={val.text}
+                    url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
+                    geo={val.geo}
+                  />
+                </>
+              );
+            })}
+          </div>
+        ) : (
+          <center>
+            <Spin />
+          </center>
+        )}
+
         <h5
           className="text-[#650D26] text-2xl font-semibold mt-10"
           style={{ fontFamily: "Montserrat Alternates" }}
