@@ -27,6 +27,7 @@ const { Panel } = Collapse;
 const MyPosts = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [editPost, setEditPost] = useState({});
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -136,7 +137,10 @@ const MyPosts = () => {
                         icon={<EditOutlined />}
                         className="text-blue-500"
                         size="small"
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => {
+                          setEditPost({ ...post });
+                          setIsModalOpen(true);
+                        }}
                       />
                       <Popconfirm
                         title="Are you sure you want to delete this post?"
@@ -168,27 +172,27 @@ const MyPosts = () => {
                     {post.desc}
                   </Markdown>
                 </p>
-                <Modal
-                  title={"Edit Your Post"}
-                  open={isModalOpen}
-                  onCancel={() => {
-                    setIsModalOpen(false);
-                  }}
-                  footer={null}
-                  width={800}
-                  destroyOnClose={true}
-                >
-                  <CreatePost
-                    isEdit={true}
-                    post={post}
-                    setIsModalOpen={setIsModalOpen}
-                    setReRender={setReRender}
-                  />
-                </Modal>
               </Panel>
             ))
           )}
         </Collapse>
+        <Modal
+          title={"Edit Your Post"}
+          open={isModalOpen}
+          onCancel={() => {
+            setIsModalOpen(false);
+          }}
+          footer={null}
+          width={800}
+          destroyOnClose={true}
+        >
+          <CreatePost
+            isEdit={true}
+            post={editPost}
+            setIsModalOpen={setIsModalOpen}
+            setReRender={setReRender}
+          />
+        </Modal>
       </Spin>
     </>
   );
