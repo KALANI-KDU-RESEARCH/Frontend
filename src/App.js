@@ -8,6 +8,8 @@ import ChatBot from "./components/chatBot";
 import { useEffect, useState } from "react";
 import CreatePost from "./components/CreatePost";
 import MyPosts from "./components/MyPosts";
+import IDashBoard from "./components/iDashBoard";
+import Footer from "./components/Footer";
 
 function App() {
   const [render, setRender] = useState(false);
@@ -31,7 +33,12 @@ function App() {
           path="/dash-board"
           element={
             <PrivateRoute>
-              <EDashBoard setIsDeleted={setIsDeleted} />
+              {user?.type === "Invester" ? (
+                <IDashBoard />
+              ) : (
+                <EDashBoard setIsDeleted={setIsDeleted} />
+              )}
+              <Footer />
             </PrivateRoute>
           }
         />
@@ -40,6 +47,7 @@ function App() {
           element={
             <PrivateRoute>
               <CreatePost />
+              <Footer />
             </PrivateRoute>
           }
         />
@@ -48,6 +56,7 @@ function App() {
           element={
             <PrivateRoute>
               <MyPosts />
+              <Footer />
             </PrivateRoute>
           }
         />

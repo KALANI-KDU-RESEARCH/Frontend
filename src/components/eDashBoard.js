@@ -25,10 +25,25 @@ const EDashBoard = ({ setIsDeleted }) => {
   const predictions = useRef([]);
   const [dataPredicted, setDataPredicted] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [impressionRate, setImpressionRate] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
+      if (local.type === "Entrepreneur")
+        await axios
+          .post(`${REACT_APP_BASE_URL}/impressionRate/${local._id}`, {
+            interests_count: local.interests?.length,
+            age: local.age,
+            experience: local.experience,
+          })
+          .then((res) => {
+            setImpressionRate(res.data?.["impression-rate"]);
+            localStorage.setItem(
+              "impressionRate",
+              res.data?.["impression-rate"]
+            );
+          });
       for await (const { text } of user) {
         setLoading(true);
         const result = await axios.post(
@@ -73,8 +88,11 @@ const EDashBoard = ({ setIsDeleted }) => {
             onSelect={(e) => {
               setIsLoading(true);
               navigate("?geo=" + countries.find((el) => el.label === e)?.value);
-              setUser(prevArray =>
-                prevArray.map(obj => ({ ...obj, geo: countries.find((el) => el.label === e)?.value }))
+              setUser((prevArray) =>
+                prevArray.map((obj) => ({
+                  ...obj,
+                  geo: countries.find((el) => el.label === e)?.value,
+                }))
               );
               setTimeout(() => {
                 console.log("user----", user);
@@ -85,30 +103,32 @@ const EDashBoard = ({ setIsDeleted }) => {
           />
         </h5>
 
-        {
-          !isLoading ?
-            <div id="widget" className="flex gap-1 overflow-x-scroll mt-2">
-              {[...user].map((val) => {
-                return (
-                  <>
-                    <GoogleTrends
-                      type="TIMESERIES"
-                      keyword={val.text}
-                      url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
-                      geo={val.geo}
-                    />
-                    <GoogleTrends
-                      type="GEO_MAP"
-                      keyword={val.text}
-                      url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
-                      geo={val.geo}
-                    />
-                  </>
-                );
-              })}
-            </div> :
-            <center><Spin /></center>
-        }
+        {!isLoading ? (
+          <div id="widget" className="flex gap-1 overflow-x-scroll mt-2">
+            {[...user].map((val) => {
+              return (
+                <>
+                  <GoogleTrends
+                    type="TIMESERIES"
+                    keyword={val.text}
+                    url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
+                    geo={val.geo}
+                  />
+                  <GoogleTrends
+                    type="GEO_MAP"
+                    keyword={val.text}
+                    url="https://ssl.gstatic.com/trends_nrtr/3700_RC01/embed_loader.js"
+                    geo={val.geo}
+                  />
+                </>
+              );
+            })}
+          </div>
+        ) : (
+          <center>
+            <Spin />
+          </center>
+        )}
 
         <h5
           className="text-[#650D26] text-2xl font-semibold mt-10"
