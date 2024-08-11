@@ -106,7 +106,11 @@ const CreatePost = ({
   return (
     <>
       {!isEdit && <Header />}
-      <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-20">
+      <div
+        className={`max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg ${
+          !isEdit && "mt-20"
+        }`}
+      >
         <Form onFinish={handleSubmit} labelCol={{ span: 4 }} form={form}>
           <Form.Item
             name="title"

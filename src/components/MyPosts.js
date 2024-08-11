@@ -27,6 +27,7 @@ const { Panel } = Collapse;
 const MyPosts = () => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [editPost, setEditPost] = useState({});
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,7 +98,13 @@ const MyPosts = () => {
           defaultActiveKey={["0"]}
         >
           {!filteredPosts.length ? (
-            <Empty description={!posts.length ? "No posts available yet." : "No matching results found."} />
+            <Empty
+              description={
+                !posts.length
+                  ? "No posts available yet."
+                  : "No matching results found."
+              }
+            />
           ) : (
             filteredPosts.map((post, index) => (
               <Panel
@@ -105,7 +112,11 @@ const MyPosts = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Badge
-                        status={post.status ? "success" : "default"}
+                        status={
+                          post?.["contacted-list"]?.length
+                            ? "success"
+                            : "default"
+                        }
                         className="mr-2"
                       />
                       <span className="text-lg font-semibold">
@@ -126,7 +137,10 @@ const MyPosts = () => {
                         icon={<EditOutlined />}
                         className="text-blue-500"
                         size="small"
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => {
+                          setEditPost({ ...post });
+                          setIsModalOpen(true);
+                        }}
                       />
                       <Popconfirm
                         title="Are you sure you want to delete this post?"
@@ -151,34 +165,34 @@ const MyPosts = () => {
               >
                 <p className="p-4 text-gray-700">
                   <Image src={post.img} />
-                  <Markdown
+                  <Markdown className="text-justify mt-5 leading-loose"
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw]}
                   >
                     {post.desc}
                   </Markdown>
                 </p>
-                <Modal
-                  title={"Edit Your Post"}
-                  open={isModalOpen}
-                  onCancel={() => {
-                    setIsModalOpen(false);
-                  }}
-                  footer={null}
-                  width={800}
-                  destroyOnClose={true}
-                >
-                  <CreatePost
-                    isEdit={true}
-                    post={post}
-                    setIsModalOpen={setIsModalOpen}
-                    setReRender={setReRender}
-                  />
-                </Modal>
               </Panel>
             ))
           )}
         </Collapse>
+        <Modal
+          title={"Edit Your Post"}
+          open={isModalOpen}
+          onCancel={() => {
+            setIsModalOpen(false);
+          }}
+          footer={null}
+          width={800}
+          destroyOnClose={true}
+        >
+          <CreatePost
+            isEdit={true}
+            post={editPost}
+            setIsModalOpen={setIsModalOpen}
+            setReRender={setReRender}
+          />
+        </Modal>
       </Spin>
     </>
   );
