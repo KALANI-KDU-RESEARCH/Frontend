@@ -85,7 +85,7 @@ const Header = ({ setIsDeleted }) => {
               />
               <span class="self-center md:text-xl text-[9px] font-semibold whitespace-nowrap dark:text-white relative">
                 Micro Entrepreneur Management System
-                <span class="text-[10px] font-medium text-blue-500 ml-1 align-super bg-blue-100 p-1 rounded">
+                <span class="text-[10px] font-medium text-blue-500 ml-1 align-super bg-blue-100 p-0.75 rounded">
                   Logged in as {user.type}
                 </span>
               </span>
