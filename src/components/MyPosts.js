@@ -165,7 +165,7 @@ const MyPosts = () => {
               >
                 <p className="p-4 text-gray-700">
                   <Image src={post.img} />
-                  <Markdown className="text-justify mt-5 leading-loose"
+                  <Markdown className="text-justify mt-4 leading-loose"
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw]}
                   >
