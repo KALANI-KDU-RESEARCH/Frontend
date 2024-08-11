@@ -191,7 +191,7 @@ const Register = () => {
                     defaultValue={"Entrepreneur"}
                   >
                     <option value={"Entrepreneur"}>Entrepreneur</option>
-                    <option value={"Invester"}>Invester</option>
+                    <option value={"Invester"}>Investor</option>
                   </select>
                 </div>
               </div>
