@@ -28,7 +28,18 @@ function App() {
     <div>
       {render && <ChatBot isDeleted={isDeleted} setIsDeleted={setIsDeleted} />}
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            user?.type === "Invester" ? (
+              <IDashBoard />
+            ) : user?.type === "Entrepreneur" ? (
+              <EDashBoard setIsDeleted={setIsDeleted} />
+            ) : (
+              <Login />
+            )
+          }
+        />
         <Route
           path="/dash-board"
           element={
