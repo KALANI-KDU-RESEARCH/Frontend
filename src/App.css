@@ -48,3 +48,7 @@
 .embed-logo {
   display: none !important;
 }
+
+.ant-image{
+  width: 100%;
+}
