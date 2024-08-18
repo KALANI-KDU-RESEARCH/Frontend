@@ -3,6 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { headers } from "./helpers/helper";
 import { notification } from "antd";
+import {
+  HeartOutlined,
+  KeyOutlined,
+  MailOutlined,
+  ProfileOutlined,
+  ReconciliationOutlined,
+  UserSwitchOutlined,
+} from "@ant-design/icons";
 const { REACT_APP_BASE_URL } = process.env;
 
 const Register = () => {
@@ -65,11 +73,21 @@ const Register = () => {
   };
 
   return (
-    <section class="relative bg-[url('https://i.ibb.co/sg6sD4D/login.png')] h-dvh md:h-screen bg-no-repeat bg-cover  ">
+    <section class="relative bg-[url('https://i.ibb.co/jr4Grt6/cb947f9c-4b8f-420f-92a7-3b71d3d7e235.jpg')] h-dvh md:h-screen bg-no-repeat bg-cover  ">
       <div class="absolute inset-0  bg-black opacity-50"></div>
       <div class="container py-20 pb-12">
         <div class="w-full  rounded-lg shadow dark:border  sm:max-w-lg xl:p-0 mx-auto bg-gray-800 dark:border-gray-700 opacity-85 ">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <div class=" items-center ">
+              <img
+                src="https://flowbite.com/docs/images/logo.svg"
+                class=" h-6 sm:h-9 mx-auto"
+                alt="Flowbite Logo"
+              /><br/>
+              <p class="self-center md:text-xl text-[9px] font-semibold whitespace-nowrap text-white " style={{ fontFamily: "Montserrat Alternates" }}>
+                Micro Entrepreneur Management System
+              </p>
+            </div>
             <h1 class="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
               Create Your Account
             </h1>
@@ -79,7 +97,7 @@ const Register = () => {
                   for="email"
                   class="block mb-2 text-sm font-medium text-white"
                 >
-                  Your email
+                  <MailOutlined /> Your email
                 </label>
                 <input
                   type="email"
@@ -96,7 +114,7 @@ const Register = () => {
                     for="password"
                     class="block mb-2 text-sm font-medium text-white"
                   >
-                    Password
+                    <KeyOutlined /> Password
                   </label>
                   <input
                     type="password"
@@ -112,7 +130,7 @@ const Register = () => {
                     for="confirmPassword"
                     class="block mb-2 text-sm font-medium text-white"
                   >
-                    Confirm Password
+                    <KeyOutlined /> Confirm Password
                   </label>
                   <input
                     type="password"
@@ -130,7 +148,7 @@ const Register = () => {
                     for="age"
                     class="block mb-2 text-sm font-medium text-white"
                   >
-                    Age
+                    <ProfileOutlined /> Age
                   </label>
                   <input
                     type="number"
@@ -146,7 +164,7 @@ const Register = () => {
                     for="experience"
                     class="block mb-2 text-sm font-medium text-white"
                   >
-                    Experience
+                    <HeartOutlined /> Experience
                   </label>
                   <input
                     type="number"
@@ -164,7 +182,7 @@ const Register = () => {
                     for="interest"
                     class="block mb-2 text-sm font-medium text-white"
                   >
-                    Interests
+                    <ReconciliationOutlined /> Interests
                   </label>
                   <input
                     type="text"
@@ -181,7 +199,7 @@ const Register = () => {
                     for="countries"
                     class="block mb-2 text-sm font-medium text-white"
                   >
-                    User Type
+                    <UserSwitchOutlined /> User Type
                   </label>
                   <select
                     id="countries"

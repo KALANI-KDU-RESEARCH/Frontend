@@ -136,6 +136,8 @@ const CreatePost = ({
               rows={4}
               className="w-full p-2 border border-gray-300 rounded-md"
               placeholder="Enter post description"
+              maxLength={3000}
+              showCount
             />
           </Form.Item>
 

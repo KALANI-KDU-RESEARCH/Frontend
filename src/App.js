@@ -26,7 +26,9 @@ function App() {
 
   return (
     <div>
-      {render && <ChatBot isDeleted={isDeleted} setIsDeleted={setIsDeleted} />}
+      {render && user?.type === "Entrepreneur" && (
+        <ChatBot isDeleted={isDeleted} setIsDeleted={setIsDeleted} />
+      )}
       <Routes>
         <Route
           path="/"

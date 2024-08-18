@@ -235,3 +235,14 @@ export const categories = [
   "Risk Management",
   "Other",
 ];
+
+export function truncateText(text, maxLength) {
+  // Check if the text length is greater than the maximum length
+  if (text.length > maxLength) {
+      // Truncate the text to the maxLength and append ellipses
+      return text.substring(0, maxLength) + '...';
+  } else {
+      // Return the original text if it's within the maxLength
+      return text;
+  }
+}

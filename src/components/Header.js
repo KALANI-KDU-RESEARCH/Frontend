@@ -1,11 +1,15 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  HeartOutlined,
+  MailOutlined,
   SaveOutlined,
   SettingFilled,
   SettingOutlined,
+  TeamOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
-import { Button, Modal, Popover, notification } from "antd";
+import { Avatar, Badge, Button, Modal, Popover, notification } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -52,7 +56,10 @@ const Header = ({ setIsDeleted }) => {
       await axios.patch(
         `${REACT_APP_BASE_URL}/profile/${user._id}`,
         {
-          interests: interests?.toString().split(",").map((val) => val.trim()),
+          interests: interests
+            ?.toString()
+            .split(",")
+            .map((val) => val.trim()),
           age: age,
           experience: experience,
         },
@@ -65,7 +72,7 @@ const Header = ({ setIsDeleted }) => {
       localStorage.clear();
       navigate("/");
     } catch (error) {
-      console.log("ERRRR",error)
+      console.log("ERRRR", error);
       notification.error({
         message: error.response.data.detail,
         placement: "topRight",
@@ -85,9 +92,6 @@ const Header = ({ setIsDeleted }) => {
               />
               <span class="self-center md:text-xl text-[9px] font-semibold whitespace-nowrap dark:text-white relative">
                 Micro Entrepreneur Management System
-                <span class="text-[10px] font-medium text-blue-500 ml-1 align-super bg-blue-100 p-0.75 rounded">
-                  Logged in as {user.type == "Invester" ? "Investor" : user.type}
-                </span>
               </span>
             </div>
           </Link>
@@ -178,53 +182,91 @@ const Header = ({ setIsDeleted }) => {
                   Knowledge Repository
                 </a>
               </li>
-              {user.type === "Entrepreneur" && (
-                <li>
-                  <a class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
-                    <Popover
-                      content={
-                        <>
-                          My Impression Rate:{" "}
-                          {localStorage.getItem("impressionRate")}
-                          <p>
-                            <Button
-                              className=" bg-green-500 text-white w-full"
-                              onClick={() => {
-                                hide();
-                                setOpenInterestsModal(true);
-                              }}
-                            >
-                              <EditOutlined /> Update My Stats
-                            </Button>
-                          </p>
-                          <p className=" mt-1 ">
-                            <Button
-                              className=" bg-red-500 text-white w-full"
-                              onClick={() => {
-                                hide();
-                                setOpenChatsModal(true);
-                              }}
-                            >
-                              <DeleteOutlined /> Delete Chats
-                            </Button>
-                          </p>
-                        </>
-                      }
-                      title="My Account Settings"
-                      trigger="click"
-                      open={open}
-                      onOpenChange={handleOpenChange}
-                    >
-                      <Button
-                        type="primary"
-                        className="bg-black grid content-center"
+              <li>
+                <Popover
+                  content={
+                    <div>
+                      <span class="self-center md:text-xl text-[9px] font-semibold whitespace-nowrap dark:text-white relative">
+                        <span class="text-[10px] font-medium text-blue-500 ml-1 align-super bg-blue-100 p-0.75 rounded">
+                          Logged in as{" "}
+                          {user.type == "Invester" ? "Investor" : user.type}
+                        </span>
+                        <p className=" text-sm">
+                          <MailOutlined />
+                          &nbsp; {user.email}
+                        </p>
+                        <p className=" text-sm">
+                          <TeamOutlined />
+                          &nbsp; Age : {user.age}
+                        </p>
+                        <p className=" text-sm">
+                          <HeartOutlined />
+                          &nbsp; Exp :{user.experience}
+                        </p>
+                      </span>
+                    </div>
+                  }
+                >
+                  <Badge dot>
+                    <Avatar shape="square" icon={<UserOutlined />} />
+                  </Badge>
+                </Popover>
+              </li>
+              {user.type === "Entrepreneur" ||
+                (user.type === "Invester" && (
+                  <li>
+                    <a class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                      <Popover
+                        content={
+                          <>
+                            {user.type !== "Invester" && (
+                              <>
+                                My Impression Rate:{" "}
+                                {localStorage.getItem("impressionRate")}
+                              </>
+                            )}
+
+                            <p>
+                              <Button
+                                className=" bg-green-500 text-white w-full"
+                                onClick={() => {
+                                  hide();
+                                  setOpenInterestsModal(true);
+                                }}
+                              >
+                                <EditOutlined /> Update My Stats
+                              </Button>
+                            </p>
+                            {user.type !== "Invester" && (
+                              <p className=" mt-1 ">
+                                <Button
+                                  className=" bg-red-500 text-white w-full"
+                                  onClick={() => {
+                                    hide();
+                                    setOpenChatsModal(true);
+                                  }}
+                                >
+                                  <DeleteOutlined /> Delete Chats
+                                </Button>
+                              </p>
+                            )}
+                          </>
+                        }
+                        title="My Account Settings"
+                        trigger="click"
+                        open={open}
+                        onOpenChange={handleOpenChange}
                       >
-                        <SettingFilled className=" text-white " />
-                      </Button>
-                    </Popover>
-                  </a>
-                </li>
-              )}
+                        <Button
+                          type="primary"
+                          className="bg-black grid content-center"
+                        >
+                          <SettingFilled className=" text-white " />
+                        </Button>
+                      </Popover>
+                    </a>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>

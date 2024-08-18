@@ -164,7 +164,7 @@ const MyPosts = () => {
                 className="border-b border-gray-300"
               >
                 <p className="p-4 text-gray-700">
-                  <Image src={post.img} />
+                  <Image src={post.img} className=" w-1/2 mx-auto"/>
                   <Markdown className="text-justify mt-4 leading-loose"
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw]}

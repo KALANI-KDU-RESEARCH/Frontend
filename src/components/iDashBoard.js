@@ -19,9 +19,10 @@ import {
   DislikeOutlined,
   EditOutlined,
   TagOutlined,
+  UnlockOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import { headers } from "./helpers/helper";
+import { headers, truncateText } from "./helpers/helper";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -48,7 +49,16 @@ const IDashBoard = () => {
         })
         .then((res) => {
           setPosts(res.data);
-          setFilteredPosts(res.data); // Initialize filteredPosts
+          setFilteredPosts(
+            res.data.filter(
+              (el) =>
+                user.interests.filter((val) =>
+                  el.cat
+                    .map((c) => c.toLowerCase())
+                    .some((e) => e.includes(val.toLowerCase()))
+                ).length
+            )
+          ); // Initialize filteredPosts
         })
         .finally(() => {
           setLoading(false);
@@ -97,6 +107,18 @@ const IDashBoard = () => {
     }
   };
 
+  console.log(
+    "CCCCC",
+    filteredPosts.filter(
+      (el) =>
+        user.interests.filter((val) =>
+          el.cat
+            .map((c) => c.toLowerCase())
+            .some((e) => e.includes(val.toLowerCase()))
+        ).length
+    )
+  );
+  console.log("IN", user.interests);
   return (
     <>
       <Header />
@@ -200,13 +222,28 @@ const IDashBoard = () => {
               >
                 Entrepreneur Impression Rate: {post.impressionRate}
                 <p className="p-4 text-gray-700">
-                  <Image src={post.img}/>
-                  <Markdown className="text-justify mt-4 leading-loose"
+                  <Image src={post.img} className=" w-1/2 mx-auto" />
+                  <Markdown
+                    className="text-justify mt-4 leading-loose"
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw]}
                   >
-                    {post.desc}
+                    {post.desc.length > 2000
+                      ? truncateText(post.desc, 2000)
+                      : post.desc}
                   </Markdown>
+                  {post.desc.length > 2000 && (
+                    <Popconfirm
+                      title="Hidden Content Available"
+                      description="If you need to unlock the full content, please go to connect entreprenuer section above."
+                      cancelText=""
+                      okType="default"
+                    >
+                      <Button className=" bg-red-600 text-white">
+                        <UnlockOutlined /> Unlock Full Content
+                      </Button>{" "}
+                    </Popconfirm>
+                  )}
                 </p>
                 <Modal
                   title={"Edit Your Post"}
